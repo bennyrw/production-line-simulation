@@ -11,7 +11,8 @@
             "program": "${workspaceFolder}/dist/app.js",
             "skipFiles": [
                 "<node_internals>/**"
-            ]
+            ],
+            "preLaunchTask": "${defaultBuildTask}"
         },
         {
             "type": "node",
