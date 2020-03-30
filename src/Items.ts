@@ -1,21 +1,32 @@
 /**
  * An item that can be stored in a conveyer belt slot or held by a worker.
  */
-export interface Item {
-}
+export type Item = Component | Product;
 
 /**
  * A component that can be made into a product.
  */
-export class Component implements Item {
+export class Component {
     /**
      * The type of the component.
      */
-    type: string
+    componentType: string
+
+    constructor(componentType: string) {
+        this.componentType = componentType;
+    }
+
+    clone(): Component {
+        return new Component(this.componentType);
+    }
 }
 
 /**
  * A finished product.
  */
-export class Product implements Item {
+export class Product {
+    /**
+     * The type of the product.
+     */
+    productType: string;
 }

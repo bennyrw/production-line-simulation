@@ -1,5 +1,8 @@
-import { Slot, SlotDefinition } from "./Slot"
-import { Item } from "./Items";
+import { Slot } from "./Slot";
+import { Item, Component } from "./Items";
+import { Worker } from "./Worker";
+
+export type EndOfBeltCallback = (item: Item) => void;
 
 /**
  * The conveyer belt, made up of multiple slots.
@@ -10,31 +13,34 @@ export class Belt {
      */
     slots: Slot[] = [];
     /**
-     * The items that can be generated at the start of this conveyer belt, which may include null if the start of the belt can become empty.
+     * The components that can be generated at the start of this conveyer belt, which may include null if the start of the belt can become empty.
      */
-    possibleItems: Item[];
+    possibleComponents: Component[]
 
-    constructor(initialSlotStates: SlotDefinition[], possibleItems: Item[]) {
-        this.slots = initialSlotStates.map(state => new Slot(state));
-        this.possibleItems = possibleItems;
+    constructor(slots: Slot[], possibleComponents: Component[]) {
+        this.slots = slots;
+        this.possibleComponents = possibleComponents;
     }
 
     /**
-     * Advance the items in the slots by one step, potentially adding a newly generated item in the first slot.
+     * Advance the items in the slots by one step, potentially adding a newly generated component in the first slot.
      */
     advanceSlotItems(): void {
-        for (let i = this.slots.length -1; i > 0; i--) {
+        const numSlots = this.slots.length;
+        for (let i = numSlots - 1; i > 0; i--) {
             this.slots[i].item = this.slots[i - 1].item;
         }
 
-        this.slots[0].item = this.generateNewItem();
+        this.slots[0].item = this.generateNewComponent();
     }
 
     /**
-     * Generate a new item at the start of the conveyer belt. Currently this randomly generates one item from possibleItems with equal probability.
+     * Generate a new component at the start of the conveyer belt. Currently this randomly generates one component from those possible with equal probability.
      */
-    private generateNewItem(): Item {
-        const index = Math.floor(Math.random() * this.possibleItems.length);
-        return this.possibleItems[index];
+    private generateNewComponent(): Component {
+        const index = Math.floor(Math.random() * this.possibleComponents.length);
+        const componentTemplate = this.possibleComponents[index];
+        // return a new copy of the template
+        return componentTemplate ? componentTemplate.clone() : null;
     }
 }
