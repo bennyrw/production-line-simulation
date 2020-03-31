@@ -50,19 +50,12 @@ class StatsRecorder implements Observer {
         });
         console.log(`  ${this.numFinishedProductsExited} x finished products exited the belt`);
         this.componentTypesExited.forEach((count, componentType) => {
-            console.log(`  ${count} x Component ${componentType} exited the belt`);
+            console.log(`  ${count} x unused Component ${componentType} exited the belt`);
         });
     }
 }
 
 const stats = new StatsRecorder();
 const belt = new Belt(slots, possibleComponents, stats);
-
-for (let i = 0; i < config.simulationLength; i++) {
-    belt.advanceSlotItems();
-    belt.slots.forEach(slot => {
-        slot.doWork();
-    });
-}
-
+belt.simulate(config.simulationLength);
 stats.printSummary();

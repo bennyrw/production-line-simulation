@@ -47,7 +47,7 @@ export class Slot {
                 return;
             }
 
-            // next, prioritise anyone who hasn't got the component (also creates an empty slot for workers down the belt to put finished products into)
+            // next, prioritise anyone who hasn't got the component
             const workerWhoNeedsComponent = idleWorkers.find(worker => worker.canTake(this.item as Component));
             if (workerWhoNeedsComponent) {
                 workerWhoNeedsComponent.takeComponent(this);
