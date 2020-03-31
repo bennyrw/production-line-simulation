@@ -12,9 +12,9 @@ export class Slot {
     /**
      * The item at this slot, if there is one.
      */
-    item?: Item;
+    item?: Item = null;
 
-    constructor(workers: Worker[], item?: Item) {
+    constructor(workers: Worker[], item: Item = null) {
         this.workers = workers;
         this.item = item;
     } 
@@ -60,7 +60,7 @@ export class Slot {
     }
 
     isEmpty(): boolean {
-        return this.item === null;
+        return !Boolean(this.item);
     }
 
     hasComponent(): boolean {

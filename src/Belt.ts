@@ -1,8 +1,7 @@
 import { Slot } from "./Slot";
 import { Item, Component } from "./Items";
 import { Worker } from "./Worker";
-
-export type EndOfBeltCallback = (item: Item) => void;
+import { Observer } from "./Observer";
 
 /**
  * The conveyer belt, made up of multiple slots.
@@ -16,10 +15,15 @@ export class Belt {
      * The components that can be generated at the start of this conveyer belt, which may include null if the start of the belt can become empty.
      */
     possibleComponents: Component[]
+    /**
+     * Callback when an item reaches the end of the belt. e.g. can be used for logging.
+     */
+    observer: Observer;
 
-    constructor(slots: Slot[], possibleComponents: Component[]) {
+    constructor(slots: Slot[], possibleComponents: Component[], observer?: Observer) {
         this.slots = slots;
         this.possibleComponents = possibleComponents;
+        this.observer = observer;
     }
 
     /**
@@ -27,11 +31,18 @@ export class Belt {
      */
     advanceSlotItems(): void {
         const numSlots = this.slots.length;
+        if (this.observer) {
+            this.observer.notifyItemExitedBelt(this.slots[numSlots - 1].item);
+        }
+
         for (let i = numSlots - 1; i > 0; i--) {
             this.slots[i].item = this.slots[i - 1].item;
         }
 
         this.slots[0].item = this.generateNewComponent();
+        if (this.observer) {
+            this.observer.notifyComponentEnteredBelt(this.slots[0].item as Component);
+        }
     }
 
     /**
